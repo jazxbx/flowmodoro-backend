@@ -20,7 +20,7 @@ model User {
 
 model Task {
   id        String     @id @default(uuid())
-  title     String
+  title     String?
   completed Boolean
   userId    String
   user      User       @relation(fields: [userId], references: [id])
@@ -28,11 +28,10 @@ model Task {
 }
 
 model TaskTime {
-  id        String   @id @default(uuid())
-  duration  Int
-  started   DateTime @default(now())
-  ended     DateTime @updatedAt
-  completed Boolean
-  Task      Task     @relation(fields: [taskId], references: [id])
-  taskId    String
+  id       String   @id @default(uuid())
+  duration Int
+  started  DateTime @default(now())
+  ended    DateTime @updatedAt
+  Task     Task     @relation(fields: [taskId], references: [id])
+  taskId   String
 }
