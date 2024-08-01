@@ -7,7 +7,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 // Routes
-import { authRouter, viewsRouter } from './routes';
+import { authRouter, viewsRouter, tasksRouter } from './routes';
 
 // Environment Variables Setup
 const PORT = process.env.PORT;
@@ -23,6 +23,7 @@ app.use(express.json());
 //Routers
 app.use('/v1', viewsRouter);
 app.use('/v1/auth', authRouter);
+app.use('/v1', tasksRouter);
 // app.use('/v1/users', usersRouter);
 
 //Not Found
@@ -32,5 +33,5 @@ app.use((req, res, next) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server is running at http://localhost:${PORT}`);
+  console.log(`Server is running at http://localhost:${PORT}/v1`);
 });
