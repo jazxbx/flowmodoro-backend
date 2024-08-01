@@ -71,14 +71,16 @@ export const updateTask = tasks.put(
   '/tasks/:id',
   async (req: Request<RequestParams>, res: Response) => {
     const { id } = req.params;
+
     const { title, completed } = req.body as tasksRequestBody;
     try {
-      if (!id) {
-        res.status(400).json({ error: 'Invalid ID' });
-      }
-      await prisma.task.findUnique({
+      const findTask = await prisma.task.findUnique({
         where: { id },
       });
+
+      if (!findTask) {
+        return res.status(400).json({ error: 'Invalid Task ID' });
+      }
 
       const task = await prisma.task.update({
         where: { id },
@@ -95,14 +97,21 @@ export const updateTask = tasks.put(
   }
 );
 
-export const deleteTask = tasks.delete('/tasks/:id', async (req, res) => {
-  const { id } = req.params;
-  try {
-    await prisma.task.delete({
-      where: { id },
-    });
-    res.send({ message: 'Successfully deleted task' });
-  } catch (error) {
-    res.status(400).json({ error: (error as Error).message });
+export const deleteTask = tasks.delete(
+  '/tasks/:id',
+  async (req: Request<RequestParams>, res: Response) => {
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).json({ error: 'Invalid ID' });
+    }
+    try {
+      await prisma.task.delete({
+        where: { id },
+      });
+      res.status(200).send({ message: 'Successfully deleted task' });
+    } catch (error) {
+      res.status(400).json({ error: (error as Error).message });
+    }
   }
-});
+);
