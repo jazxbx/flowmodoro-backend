@@ -86,10 +86,10 @@ export const login = users.post('/login', async (req, res) => {
         email,
       },
     });
-    if (!email) {
+    if (!user) {
       return res.send({
         success: false,
-        error: 'Email/Password invalid',
+        error: 'Email / Password incorrect',
       });
     }
     const isPasswordValid = await bcrypt.compare(password, user?.password);
