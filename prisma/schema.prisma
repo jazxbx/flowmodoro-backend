@@ -28,10 +28,10 @@ model Task {
 }
 
 model TaskTime {
-  id       String   @id @default(uuid())
-  duration Int
-  started  DateTime @default(now())
-  ended    DateTime @updatedAt
-  Task     Task     @relation(fields: [taskId], references: [id])
+  id       String    @id @default(uuid())
+  duration Int       @default(0)
+  started  DateTime  @default(now())
+  ended    DateTime? @updatedAt
+  Task     Task      @relation(fields: [taskId], references: [id])
   taskId   String
 }

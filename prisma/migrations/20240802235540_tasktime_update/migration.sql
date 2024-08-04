@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "TaskTime" ALTER COLUMN "duration" SET DEFAULT 0;
+ALTER TABLE "TaskTime" ALTER COLUMN "ended" DROP NOT NULL;
