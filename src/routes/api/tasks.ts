@@ -7,12 +7,21 @@ import {
   deleteTask,
 } from '../../controllers/tasks';
 
+import { createTasktime, updateTasktime } from '../../controllers/tasktimes';
+// import {getTasktime} from '../../controllers/taskTime'
+
 const router = express.Router();
 
-router.route('/tasks').get(getTasks);
-router.route('/tasks/:id').get(getTask);
-router.route('/tasks').post(createTask);
-router.route('/tasks/:id').put(updateTask);
-router.route('/tasks/:id').delete(deleteTask);
+router.route('/').get(getTasks).post(createTask);
+router.route('/:id').get(getTask).put(updateTask).delete(deleteTask);
+
+//TASKTIME TIMER TODO:idk rename to timer??
+
+// test if route is working
+// router.route('/:id/tasktime').get(getTasktime);
+router.route('/:id/tasktime').post(createTasktime).put(updateTasktime);
 
 export { router };
+
+
+TODO: model validation 

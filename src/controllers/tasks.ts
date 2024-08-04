@@ -9,30 +9,31 @@ const tasks = express.Router();
 
 // GET ALL TASKS GET route: api/v1/tasks
 
-export const getTasks = tasks.get(
-  '/tasks',
-  async (_: Request, res: Response) => {
-    try {
-      const tasks = await prisma.task.findMany();
+export const getTasks = tasks.get('', async (_: Request, res: Response) => {
+  try {
+    const tasks = await prisma.task.findMany({
+      include: {
+        taskTime: true,
+      },
+    });
 
-      if (!tasks) {
-        res.send({
-          success: false,
-          message: 'No tasks found. Please create task',
-        });
-      }
-
-      res.status(200).json(tasks);
-    } catch (error) {
-      res.status(400).json({ error: (error as Error).message });
+    if (!tasks) {
+      res.send({
+        success: false,
+        message: 'No tasks found. Please create task',
+      });
     }
+
+    res.status(200).json(tasks);
+  } catch (error) {
+    res.status(400).json({ error: (error as Error).message });
   }
-);
+});
 
 // GET SINGLE TASK GET route: api/v1/tasks/:taskId
 
 export const getTask = tasks.get(
-  '/tasks/:id',
+  '/:id',
   async (req: Request<RequestParams>, res: Response) => {
     const { id } = req.params;
     try {
@@ -41,6 +42,9 @@ export const getTask = tasks.get(
       }
       const task = await prisma.task.findUnique({
         where: { id },
+        include: {
+          taskTime: true,
+        },
       });
       res.status(200).json(task);
     } catch (error) {
@@ -51,7 +55,7 @@ export const getTask = tasks.get(
 
 // CREATE TASK POST REQ route: api/v1/tasks
 export const createTask = tasks.post(
-  '/tasks',
+  '/',
   async (req: Request, res: Response) => {
     // TODO: pass userId in reqbody correct??
 
@@ -68,7 +72,7 @@ export const createTask = tasks.post(
 );
 
 export const updateTask = tasks.put(
-  '/tasks/:id',
+  '/:id',
   async (req: Request<RequestParams>, res: Response) => {
     const { id } = req.params;
 
@@ -98,7 +102,7 @@ export const updateTask = tasks.put(
 );
 
 export const deleteTask = tasks.delete(
-  '/tasks/:id',
+  '/:id',
   async (req: Request<RequestParams>, res: Response) => {
     const { id } = req.params;
 

@@ -23,7 +23,8 @@ app.use(express.json());
 //Routers
 app.use('/v1', viewsRouter);
 app.use('/v1/auth', authRouter);
-app.use('/v1', tasksRouter);
+app.use('/v1/tasks', tasksRouter);
+// app.use('/v1/tasks', taskstimeRouter);
 // app.use('/v1/users', usersRouter);
 
 //Not Found
