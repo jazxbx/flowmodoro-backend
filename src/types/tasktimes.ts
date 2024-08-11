@@ -1,10 +1,10 @@
 import { z } from 'zod';
 
-export const taskTimeRequestBody = z.object({
+export const taskTimesRequestBody = z.object({
   started: z.string().datetime(),
   ended: z.string().datetime().optional().optional(),
-  // duration: z.number(),
+  duration: z.number(),
   taskId: z.string().uuid(),
 });
 
-export type taskTimeRequestBody = z.infer<typeof taskTimeRequestBody>;
+export type taskTimesRequestBody = z.infer<typeof taskTimesRequestBody>;

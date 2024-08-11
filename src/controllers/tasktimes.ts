@@ -1,12 +1,14 @@
 import express from 'express';
 import { Request, Response } from 'express';
+
 import { type RequestParams } from '../types/common';
 import { prisma } from '../index';
-import { taskTimeRequestBody } from '../types/tasktime';
+import { taskTimesRequestBody } from '../types/tasktimes';
 
 const tasksRouter = express.Router();
 //mergeParams from tasksRouter
 const tasktime = express.Router({ mergeParams: true });
+const dayjs = require('dayjs');
 
 // //TEST ROUTE
 // export const getTasktime = tasktime.get(
@@ -30,7 +32,7 @@ export const createTasktime = tasktime.post(
   '/:id/tasktime',
   async (req: Request<RequestParams>, res: Response) => {
     const { id } = req.params;
-    const { started } = req.body as taskTimeRequestBody;
+    const { started } = req.body as taskTimesRequestBody;
 
     try {
       const findTask = await prisma.task.findUnique({
@@ -59,37 +61,40 @@ export const createTasktime = tasktime.post(
   }
 );
 
-//PUT
+//PUT api/version/tasks/:id/tasktime/id
 
-// export const updateTasktime = tasktime.put(
-//   '/:id/tasktime/:id',
+// Ends timer
 
-//   async (req: Request<RequestParams>, res: Response) => {
-//     const { id } = req.params;
-//     const { started, ended } = req.body as taskTimeRequestBody;
+export const updateTasktime = tasktime.put(
+  '/:id/tasktime/:id',
 
-//     try {
-//       const findTasktime = await prisma.taskTime.findUnique({
-//         where: { id },
-//       });
+  async (req: Request<RequestParams>, res: Response) => {
+    const { id } = req.params;
+    const { ended } = req.body as taskTimesRequestBody;
 
-//       if (!findTasktime) {
-//         return res.status(400).json({
-//           error: 'Timer not found',
-//         });
-//       }
+    try {
+      const findTasktime = await prisma.taskTime.findUnique({
+        where: { id },
+      });
 
-//       const tasktime = await prisma.taskTime.create({
-//         data: {
-//           started: new Date(started),
-//           ended: ended ? new Date(ended) : null,
-//           taskId: id,
-//         },
-//       });
+      if (!findTasktime) {
+        return res.status(400).json({
+          error: 'Task Time not found',
+        });
+      }
 
-//       res.status(200).json(tasktime);
-//     } catch (error) {
-//       res.status(400).json({ error: (error as Error).message });
-//     }
-//   }
-// );
+      const duration = dayjs(ended).diff(dayjs(findTasktime.started), 'second');
+
+      const tasktime = await prisma.taskTime.update({
+        where: { id },
+        data: {
+          ended,
+          duration,
+        },
+      });
+      res.status(200).json(tasktime);
+    } catch (error) {
+      res.status(400).json({ error: (error as Error).message });
+    }
+  }
+);

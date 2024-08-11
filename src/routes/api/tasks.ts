@@ -15,13 +15,9 @@ const router = express.Router();
 router.route('/').get(getTasks).post(createTask);
 router.route('/:id').get(getTask).put(updateTask).delete(deleteTask);
 
-//TASKTIME TIMER TODO:idk rename to timer??
-
-// test if route is working
-// router.route('/:id/tasktime').get(getTasktime);
-router.route('/:id/tasktime').post(createTasktime).put(updateTasktime);
+router.route('/:id/tasktime').post(createTasktime);
+router.route('/:id/tasktime/:id').put(updateTasktime);
 
 export { router };
 
-
-TODO: model validation 
+// TODO: model validation
