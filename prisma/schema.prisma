@@ -43,10 +43,9 @@ model Goal {
   user      User     @relation(fields: [userId], references: [id])
   userId    String
   goalTime  Int
-  // date @unique makes sure that there is only one goal per day
-  date      DateTime @unique @default(now())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  date      DateTime @default(now())
+  goalStart DateTime @default(now())
+  goalComplete DateTime?
 
   @@index([date])
 }
