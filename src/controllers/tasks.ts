@@ -1,17 +1,19 @@
 import express from 'express';
 import { Request, Response } from 'express';
-import { tasksRequestBody, tasksSchema } from '../types/tasks';
+import { tasksRequestBody } from '../types/tasks';
 import { type RequestParams } from '../types/common';
 import { prisma } from '../index';
-import { userRequest } from '../types/users';
+// import { userRequest } from '../types/users';
 
 const tasks = express.Router();
 
 // GET ALL TASKS GET route: api/v1/tasks
 
-export const getTasks = tasks.get('', async (_: Request, res: Response) => {
+export const getTasks = tasks.get('', async (req: Request, res: Response) => {
+  // const userId = req.user.id;
   try {
     const tasks = await prisma.task.findMany({
+      // where: { userId },
       include: {
         taskTime: true,
       },
@@ -59,10 +61,15 @@ export const createTask = tasks.post(
   async (req: Request, res: Response) => {
     // TODO: pass userId in reqbody correct??
 
-    const { title, completed, userId } = req.body as tasksRequestBody;
+    const { title, userId } = req.body as tasksRequestBody;
     try {
       const newTask = await prisma.task.create({
-        data: { title, completed, user: { connect: { id: userId } } },
+        data: {
+          title,
+          completed: false,
+          date: new Date(),
+          user: { connect: { id: userId } },
+        },
       });
       res.status(200).send(newTask);
     } catch (error) {
